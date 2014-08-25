@@ -1,5 +1,7 @@
 import argparse
 
+from pprint import pprint
+
 import benchmarks as bm
 
 if __name__ == '__main__':
@@ -16,10 +18,12 @@ if __name__ == '__main__':
         A JSON configuration file that specifies the details of the
         benchmark data set. For example,
         {
-            "number_of_records": 10000
+            "number_of_records": 10000,
+            "sqlite": "sqlite:///"
         }
         specifies that there should be 10000 testing records CRUDed
-        by the ORMs in the benchmark session.
+        by the ORMs in the benchmark session and the SQLite connection
+        should be made against a in-memory SQLite database.
         """
     )
     parser.add_argument(
@@ -33,11 +37,30 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--sqlite", "-l",
-        nargs="?", type=str, default="sqlite:///",
+        nargs="?", type=str,
         help="""
         A DB connection string of SQLite, i.e., sqlite:///.
         Defaults to sqlite:///
         """
     )
+    parser.add_argument(
+        "--num-records", "-n",
+        nargs="?", type=int,
+        help="""
+        Specify how many random records you'd like to generate as the
+        test data.
+        """
+    )
+    parser.add_argument(
+        "--num-repeats", "-r",
+        nargs="?", type=int,
+        help="""
+        Specify how many times should each test aspect be repeated.
+        This number will be passed into timeit.timeit() to be the
+        number of repeats for each test aspect.
+        """
+    )
     args = parser.parse_args()
-    bm.perform_benchmarks(args)
+    rst = bm.perform_benchmarks(args)
+    print("Benchmark results:")
+    pprint(rst)
