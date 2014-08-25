@@ -2,6 +2,7 @@ import json
 
 from .exc import ConfigurationError
 from .sqlobject_benchmark import perform_sqlobject_benchmark
+from .storm_benchmark import perform_storm_benchmark
 
 
 def perform_benchmarks(args):
@@ -12,21 +13,15 @@ def perform_benchmarks(args):
     :return: True if benchmarks are performed correctly,
         False otherwise.
     """
+    number_of_repeats = 1
     number_of_records = None
-    number_of_repeats = None
     config = json.load(args.config)
     if 'number_of_records' in config:
         number_of_records = config['number_of_records']
     if hasattr(args, 'num_records'):
         number_of_records = args.num_records
-    if 'number_of_repeats' in config:
-        number_of_repeats = config['number_of_repeats']
-    if hasattr(args, 'num_repeats'):
-        number_of_repeats = args.num_repeats
     assert number_of_records is not None, \
         'missing parameter number_or_records'
-    assert number_of_repeats is not None, \
-        'missing parameter number_of_repeats'
     print(
         "Benchmark {0} on {1} records with "
         "each test aspect repeated {2} times".format(
@@ -34,6 +29,7 @@ def perform_benchmarks(args):
         )
     )
     benchmark_result = dict()
+    setattr(args, 'num_repeats', 1)
     for key in 'sqlite', 'mysql', 'postgresql':
         conn_str = None
         if hasattr(args, key):
@@ -42,6 +38,9 @@ def perform_benchmarks(args):
             conn_str = config[key]
         if conn_str:
             perform_sqlobject_benchmark(
+                key, conn_str, args, benchmark_result
+            )
+            perform_storm_benchmark(
                 key, conn_str, args, benchmark_result
             )
     return benchmark_result

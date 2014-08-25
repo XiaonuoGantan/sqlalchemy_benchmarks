@@ -35,7 +35,9 @@ def _sqlobject_update_data(test_data):
 
 def _sqlobject_delete_data(test_data):
     for data in test_data:
-        person = Person.select(Person.q.name == (data['person_name'] + '_suffix'))[0]
+        person = Person.select(
+            Person.q.name == (data['person_name'] + '_suffix')
+        )[0]
         Person.delete(person.id)
 
 test_data = []
@@ -52,4 +54,6 @@ def perform_sqlobject_benchmark(database, conn_str, args, benchmark_result):
             'address': 'Address_{0}'.format(x)
         }
         test_data.append(data)
-    record_benchmark_result(benchmark_result, 'SQLObject', 'sqlite', 3)
+    record_benchmark_result(
+        benchmark_result, 'SQLObject', database, args.num_repeats
+    )

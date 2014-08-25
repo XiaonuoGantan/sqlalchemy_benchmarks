@@ -51,15 +51,6 @@ if __name__ == '__main__':
         test data.
         """
     )
-    parser.add_argument(
-        "--num-repeats", "-r",
-        nargs="?", type=int,
-        help="""
-        Specify how many times should each test aspect be repeated.
-        This number will be passed into timeit.timeit() to be the
-        number of repeats for each test aspect.
-        """
-    )
     args = parser.parse_args()
     rst = bm.perform_benchmarks(args)
     print("Benchmark results:")
