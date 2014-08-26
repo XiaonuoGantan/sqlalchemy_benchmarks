@@ -4,7 +4,7 @@ import timeit
 from storm.locals import Int, Reference, RawStr, create_database, Store
 from storm.exceptions import NotOneError
 
-from .lib import record_benchmark_result
+from .lib import record_benchmark_result, test_data_from_args
 
 
 class Person(object):
@@ -73,12 +73,7 @@ def perform_storm_benchmark(database, conn_str, args, benchmark_result):
                   "(id INTEGER PRIMARY KEY, address VARCHAR, person_id INTEGER, "
                   " FOREIGN KEY(person_id) REFERENCES person(id))")
     __builtin__.__dict__.update(locals())
-    for x in range(args.num_records):
-        data = {
-            'person_name': 'Person_{0}'.format(x),
-            'address': 'Address_{0}'.format(x)
-        }
-        test_data.append(data)
+    test_data = test_data_from_args(args)
     if 'Storm' not in benchmark_result:
         benchmark_result['Storm'] = dict()
     if database not in benchmark_result['Storm']:

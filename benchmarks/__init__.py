@@ -1,6 +1,7 @@
 import json
 
 from .exc import ConfigurationError
+from .peewee_benchmark import perform_peewee_benchmark
 from .sqlobject_benchmark import perform_sqlobject_benchmark
 from .storm_benchmark import perform_storm_benchmark
 
@@ -41,6 +42,9 @@ def perform_benchmarks(args):
                 key, conn_str, args, benchmark_result
             )
             perform_storm_benchmark(
+                key, conn_str, args, benchmark_result
+            )
+            perform_peewee_benchmark(
                 key, conn_str, args, benchmark_result
             )
     return benchmark_result

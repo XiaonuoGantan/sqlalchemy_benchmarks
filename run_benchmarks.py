@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from pprint import pprint
 
@@ -53,5 +54,8 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     rst = bm.perform_benchmarks(args)
+    sqlite_file_path = os.path.join(os.path.dirname(__file__), 'sqlite')
+    if os.path.exists(sqlite_file_path):
+        os.remove(sqlite_file_path)
     print("Benchmark results:")
     pprint(rst)

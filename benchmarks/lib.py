@@ -17,3 +17,14 @@ def record_benchmark_result(benchmark_result, orm, database, timeit_times):
     for index, tf in enumerate(timeit_funcs):
         rst = timeit.timeit(tf, number=timeit_times)
         benchmark_result[orm][database][test_aspects[index]] = rst
+
+
+def test_data_from_args(args):
+    test_data = []
+    for x in range(args.num_records):
+        data = {
+            'person_name': 'Person_{0}'.format(x),
+            'address': 'Address_{0}'.format(x)
+        }
+        test_data.append(data)
+    return test_data

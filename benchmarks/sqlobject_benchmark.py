@@ -3,7 +3,7 @@ import timeit
 
 from sqlobject import StringCol, SQLObject, ForeignKey, sqlhub, connectionForURI
 
-from .lib import record_benchmark_result
+from .lib import record_benchmark_result, test_data_from_args
 
 
 class Person(SQLObject):
@@ -48,12 +48,8 @@ def perform_sqlobject_benchmark(database, conn_str, args, benchmark_result):
     sqlhub.processConnection = connectionForURI(conn_str)
     Person.createTable()
     Address.createTable()
-    for x in range(args.num_records):
-        data = {
-            'person_name': 'Person_{0}'.format(x),
-            'address': 'Address_{0}'.format(x)
-        }
-        test_data.append(data)
+    test_data = test_data_from_args(args)
+    assert test_data
     record_benchmark_result(
         benchmark_result, 'SQLObject', database, args.num_repeats
     )
