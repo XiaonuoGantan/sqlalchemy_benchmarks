@@ -4,7 +4,7 @@ import timeit
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, \
     CharField, ForeignKeyField, Model
 
-from .lib import test_data_from_args, record_benchmark_result
+from .lib import test_data_from_args
 
 
 def _peewee_insert_data(test_data, person_cls, address_cls):
@@ -38,11 +38,11 @@ __builtin__.__dict__.update(locals())
 
 def perform_peewee_benchmark(database, conn_str, args, benchmark_result):
     if database == 'sqlite':
-        db = SqliteDatabase(database)
+        db = SqliteDatabase(conn_str)
     elif database == 'mysql':
-        db = MySQLDatabase(database)
+        db = MySQLDatabase(conn_str)
     elif database == 'postgresql':
-        db = PostgresqlDatabase(database)
+        db = PostgresqlDatabase(conn_str)
 
     class Person(Model):
         name = CharField()

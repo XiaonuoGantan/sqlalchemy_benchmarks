@@ -1,4 +1,4 @@
 {
     "number_of_records": 10000,
-    "sqlite": "sqlite:///"
+    "sqlite": ":memory:"
 }

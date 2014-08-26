@@ -45,6 +45,9 @@ __builtin__.__dict__.update(locals())
 
 
 def perform_sqlobject_benchmark(database, conn_str, args, benchmark_result):
+    if database == 'sqlite':
+        if conn_str == ':memory:':
+            conn_str = 'sqlite:/:memory:'
     sqlhub.processConnection = connectionForURI(conn_str)
     Person.createTable()
     Address.createTable()

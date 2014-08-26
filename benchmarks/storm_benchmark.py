@@ -65,6 +65,9 @@ __builtin__.__dict__.update(locals())
 
 
 def perform_storm_benchmark(database, conn_str, args, benchmark_result):
+    if database == 'sqlite':
+        if conn_str == ':memory:':
+            conn_str = 'sqlite:'
     db = create_database(conn_str)
     store = Store(db)
     store.execute("CREATE TABLE person "
