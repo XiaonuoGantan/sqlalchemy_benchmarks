@@ -1,0 +1,16 @@
+Django==1.6.4
+Flask==0.10.1
+Flask-SQLAlchemy==1.0
+FormEncode==1.2.6
+Jinja2==2.7.3
+MarkupSafe==0.23
+SQLAlchemy==0.9.6
+SQLObject==1.6.0
+Werkzeug==0.9.6
+argparse==1.2.1
+itsdangerous==0.24
+peewee==2.3.1
+pony==0.4.9
+sqlamp==0.6
+storm==0.20
+wsgiref==0.1.2
