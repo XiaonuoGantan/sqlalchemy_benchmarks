@@ -45,6 +45,13 @@ if __name__ == '__main__':
         """
     )
     parser.add_argument(
+        "--mysql", "-m",
+        nargs="?", type=str,
+        help="""
+        A DB connection string of MySQL, i.e., mysql://localhost/orm_benchmark
+        """
+    )
+    parser.add_argument(
         "--num-records", "-n",
         nargs="?", type=int,
         help="""

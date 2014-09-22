@@ -1,11 +1,14 @@
 import json
 
+import pymysql
+
 from .exc import ConfigurationError
 from .peewee_benchmark import perform_peewee_benchmark
 from .ponyorm_benchmark import perform_ponyorm_benchmark
 from .sqlalchemy_benchmark import perform_sqlalchemy_benchmark
 from .sqlobject_benchmark import perform_sqlobject_benchmark
 from .storm_benchmark import perform_storm_benchmark
+from .lib import get_metadata_from_conn_str
 
 
 def perform_benchmarks(args):
@@ -43,19 +46,37 @@ def perform_benchmarks(args):
             perform_sqlobject_benchmark(
                 key, conn_str, args, benchmark_result
             )
+            clean_database(key, conn_str)
             perform_storm_benchmark(
                 key, conn_str, args, benchmark_result
             )
+            clean_database(key, conn_str)
             perform_peewee_benchmark(
                 key, conn_str, args, benchmark_result
             )
+            clean_database(key, conn_str)
             perform_ponyorm_benchmark(
                 key, conn_str, args, benchmark_result
             )
+            clean_database(key, conn_str)
             perform_sqlalchemy_benchmark(
                 key, conn_str, args, benchmark_result
             )
     return benchmark_result
+
+
+def clean_database(key, conn_str):
+    if key == 'mysql':
+        host, user, password, database = get_metadata_from_conn_str(conn_str)
+        c = pymysql.connect(
+            host=host, user=user, passwd=password, db=database
+        )
+        cur = c.cursor()
+        cur.execute("DROP TABLE IF EXISTS address")
+        cur.execute("DROP TABLE IF EXISTS person")
+        cur.close()
+        c.close()
+
 
 def _get_connection_config(key, config, args):
     """

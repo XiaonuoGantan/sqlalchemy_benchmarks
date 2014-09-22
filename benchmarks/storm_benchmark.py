@@ -70,11 +70,29 @@ def perform_storm_benchmark(database, conn_str, args, benchmark_result):
             conn_str = 'sqlite:'
     db = create_database(conn_str)
     store = Store(db)
-    store.execute("CREATE TABLE person "
-                  "(id INTEGER PRIMARY KEY, name VARCHAR)")
-    store.execute("CREATE TABLE address "
-                  "(id INTEGER PRIMARY KEY, address VARCHAR, person_id INTEGER, "
-                  " FOREIGN KEY(person_id) REFERENCES person(id))")
+    if database == 'sqlite':
+        store.execute("""
+            CREATE TABLE person
+            (id INTEGER PRIMARY KEY, name VARCHAR)
+        """)
+        store.execute("""
+            CREATE TABLE address
+            (id INTEGER PRIMARY KEY, address VARCHAR, person_id INTEGER,
+            FOREIGN KEY(person_id) REFERENCES person(id))
+        """)
+    elif database == 'mysql':
+        store.execute("""
+            CREATE TABLE person
+            (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+             name VARCHAR(256))
+        """)
+        store.execute("""
+            CREATE TABLE address
+            (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+             address VARCHAR(256),
+             person_id INT,
+             FOREIGN KEY(person_id) REFERENCES person(id))
+        """)
     __builtin__.__dict__.update(locals())
     test_data = test_data_from_args(args)
     if 'Storm' not in benchmark_result:

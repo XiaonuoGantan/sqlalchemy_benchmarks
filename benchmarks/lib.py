@@ -28,3 +28,11 @@ def test_data_from_args(args):
         }
         test_data.append(data)
     return test_data
+
+
+def get_metadata_from_conn_str(conn_str):
+    conn_str, database = conn_str.rsplit('/', 1)
+    conn_str, host = conn_str.rsplit('@', 1)
+    conn_str, user_and_password = conn_str.rsplit('/', 1)
+    user, password = user_and_password.split(':')
+    return host, user, password, database

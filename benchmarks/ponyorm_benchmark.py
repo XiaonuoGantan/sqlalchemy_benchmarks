@@ -3,8 +3,7 @@ import timeit
 
 from pony.orm import Database, Required, Set, select, db_session
 
-
-from .lib import test_data_from_args
+from .lib import test_data_from_args, get_metadata_from_conn_str
 
 
 @db_session
@@ -42,7 +41,8 @@ __builtin__.__dict__.update(locals())
 
 
 def perform_ponyorm_benchmark(database, conn_str, args, benchmark_result):
-    db = Database(database, conn_str)
+    host, user, password, db = get_metadata_from_conn_str(conn_str)
+    db = Database(database, host=host, user=user, passwd=password, db=db)
 
     class Person(db.Entity):
         name = Required(unicode)

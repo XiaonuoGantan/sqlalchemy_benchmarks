@@ -1,8 +1,9 @@
 import __builtin__
+
 import timeit
 
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import relationship, sessionmaker, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -11,15 +12,17 @@ Base = declarative_base()
 class Person(Base):
     __tablename__ = 'person'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(256))
 
 
 class Address(Base):
     __tablename__ = 'address'
     id = Column(Integer, primary_key=True)
-    address = Column(String)
+    address = Column(String(256))
     person_id = Column(Integer, ForeignKey(Person.id))
-    person = relationship(Person)
+    person = relationship(
+        Person, backref=backref('address', uselist=False, cascade='all,delete-orphan')
+    )
 
 
 def _sqlalchemy_insert_data(test_data, session):
@@ -46,9 +49,10 @@ def _sqlalchemy_update_data(test_data, session):
 
 def _sqlalchemy_delete_data(test_data, session):
     for data in test_data:
-        session.query(Person).filter(
+        person = session.query(Person).filter(
             Person.name == data['person_name'] + '_suffix'
-        ).delete()
+        ).one()
+        session.delete(person)
     session.commit()
 
 
